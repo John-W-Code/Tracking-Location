@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">TrackingLocation</string>
+    <string name="gps_message">You must turn on GPS to use the app.</string>
+    <string name="enable_gps">Enable GPS</string>
+</resources>
