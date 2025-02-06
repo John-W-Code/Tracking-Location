@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -51,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         locationViewModel = ViewModelProviderSingleton.getLocationViewModel()
         locationViewModel.locationData.observe(this) { location ->
             tvLocation.text = String.format("%S  -  %S", location.latitude, location.longitude)
+            Log.d("Location", "onCreate: ")
         }
 
 
