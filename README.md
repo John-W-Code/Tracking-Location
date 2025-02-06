@@ -90,5 +90,5 @@ This project is licensed under the **MIT License**.
 
 ## 📞 Contact
 - **GitHub:** [haedarfarhani](https://github.com/haedarfarhani)
-- **Email:** haedarfarhani@example.com
+- **Email:** haedar.farhani@gmail.com
 
