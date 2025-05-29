@@ -1,29 +1,39 @@
 package com.heydar.trackinglocation
 
 import android.Manifest
-import android.app.PendingIntent
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.location.Location
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
 import com.heydar.trackinglocation.location.ForegroundUpdateLocationService
 import com.heydar.trackinglocation.location.GPSBroadcastReceiver
+import kotlin.math.abs
 
+/// JW location
+class MyLocation (var myLong : Double, var myLat : Double){
+    fun isEmpty() : Boolean{
+        return (myLong == 0.0) && (myLat == 0.0)
+    }
+    fun insert(location: Location){
+        this.myLong = location.longitude
+        this.myLat = location.latitude
+    }
+    fun distance(location: Location) : Double {
+        return abs(location.longitude - this.myLong)
+    }
+}
 
-class MainActivity : AppCompatActivity() {
+class MainActivity() : AppCompatActivity() {
     private var gpsBroadcastReceiver: GPSBroadcastReceiver? = null
     private lateinit var locationViewModel: MainViewModel
     private val requestLocationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -41,6 +51,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // JW vars
+    var distance = 0.0
+    var oldLocation = MyLocation(0.0, 0.0)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -52,7 +66,11 @@ class MainActivity : AppCompatActivity() {
         locationViewModel = ViewModelProviderSingleton.getLocationViewModel()
         locationViewModel.locationData.observe(this) { location ->
             tvLocation.text = String.format("%S  -  %S", location.latitude, location.longitude)
-            Log.d("Location", "onCreate: ")
+            if (oldLocation.isEmpty()) {
+                oldLocation.insert(location)
+            }
+            Log.d("Location", "onCreate. distance: ${oldLocation.distance(location)}")
+            oldLocation.insert(location)
         }
 
 
