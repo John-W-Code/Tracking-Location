@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.location.Location
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -17,21 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.heydar.trackinglocation.location.ForegroundUpdateLocationService
 import com.heydar.trackinglocation.location.GPSBroadcastReceiver
-import kotlin.math.abs
 
-/// JW location
-class MyLocation (var myLong : Double, var myLat : Double){
-    fun isEmpty() : Boolean{
-        return (myLong == 0.0) && (myLat == 0.0)
-    }
-    fun insert(location: Location){
-        this.myLong = location.longitude
-        this.myLat = location.latitude
-    }
-    fun distance(location: Location) : Double {
-        return abs(location.longitude - this.myLong)
-    }
-}
 
 class MainActivity() : AppCompatActivity() {
     private var gpsBroadcastReceiver: GPSBroadcastReceiver? = null
@@ -52,25 +37,28 @@ class MainActivity() : AppCompatActivity() {
     }
 
     // JW vars
-    var distance = 0.0
     var oldLocation = MyLocation(0.0, 0.0)
+    val counting = MyCounting()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val tvLocation = findViewById<TextView>(R.id.tv_location)
+        val roundsfragment = rounds()
+
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.mainframe, roundsfragment)
+            commit()
+        }
+
         if (!Utils.isLocationAvailable(this)) {
             val gpsIntent = Intent(this, EnableGPSActivity::class.java)
             startActivity(gpsIntent)
         }
         locationViewModel = ViewModelProviderSingleton.getLocationViewModel()
         locationViewModel.locationData.observe(this) { location ->
-            tvLocation.text = String.format("%S  -  %S", location.latitude, location.longitude)
-            if (oldLocation.isEmpty()) {
-                oldLocation.insert(location)
-            }
-            Log.d("Location", "onCreate. distance: ${oldLocation.distance(location)}")
-            oldLocation.insert(location)
+            //tvLocation.text = String.format("%S  -  %S", location.latitude, location.longitude)
+            counting.updateLocation(location)
+            Log.d("Location", "onCreate. distance: ${counting.distance}")
         }
 
 
