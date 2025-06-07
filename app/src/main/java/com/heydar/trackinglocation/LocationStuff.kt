@@ -19,8 +19,7 @@ class MyLocation (var myLong : Double, var myLat : Double){
     }
 }
 
-
-class MyCounting {
+class MyCounting() {
     var startLocation = MyLocation(4.9150267, 52.3733383)
     var lastLocation  = MyLocation(0.0, 0.0)
     var currentLocation = MyLocation(0.0, 0.0)
@@ -29,6 +28,7 @@ class MyCounting {
     var outside: Boolean = false  // were we outside maxdelta
     var distance = 0
 
+
     // move currentLocation to lastLocation
     // if running then check if next round is reached
     fun updateLocation(location: Location?){
@@ -36,8 +36,8 @@ class MyCounting {
             lastLocation = currentLocation
             currentLocation.myLong = location.longitude
             currentLocation.myLat = location.latitude
+            distance = differenceMeter(startLocation, currentLocation)
             if (running) {
-                distance = differenceMeter(startLocation, currentLocation)
                 if (outside && distance < minDelta){
                     numberOfRounds += 1
                     outside = false
@@ -46,8 +46,8 @@ class MyCounting {
             }
         }
     }
-    fun setStartLocation(location: Location){
-        startLocation.setLocation(location)
+    fun setStartLocation() {
+        startLocation = currentLocation
     }
 
 }

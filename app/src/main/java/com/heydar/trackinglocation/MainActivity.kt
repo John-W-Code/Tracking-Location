@@ -9,7 +9,6 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -20,7 +19,7 @@ import com.heydar.trackinglocation.location.GPSBroadcastReceiver
 
 class MainActivity() : AppCompatActivity() {
     private var gpsBroadcastReceiver: GPSBroadcastReceiver? = null
-    private lateinit var locationViewModel: MainViewModel
+    // (moved to rounds.kt Fragment) private lateinit var locationViewModel: MainViewModel
     private val requestLocationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) {
             startLocationService()
@@ -36,17 +35,19 @@ class MainActivity() : AppCompatActivity() {
         }
     }
 
-    // JW vars
-    var oldLocation = MyLocation(0.0, 0.0)
-    val counting = MyCounting()
+    // JW vars moved to rounds.kt Fragment
+    // var oldLocation = MyLocation(0.0, 0.0)
+    // val counting = MyCounting()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val roundsfragment = rounds()
+        val roundsFragment = rounds()
 
+        //JW
+        Log.d("JW", "MainActivity.onCreate")
         supportFragmentManager.beginTransaction().apply {
-            replace(R.id.mainframe, roundsfragment)
+            replace(R.id.mainframe, roundsFragment)
             commit()
         }
 
@@ -54,13 +55,14 @@ class MainActivity() : AppCompatActivity() {
             val gpsIntent = Intent(this, EnableGPSActivity::class.java)
             startActivity(gpsIntent)
         }
+/*
         locationViewModel = ViewModelProviderSingleton.getLocationViewModel()
         locationViewModel.locationData.observe(this) { location ->
             //tvLocation.text = String.format("%S  -  %S", location.latitude, location.longitude)
             counting.updateLocation(location)
             Log.d("Location", "onCreate. distance: ${counting.distance}")
         }
-
+*/
 
         gpsBroadcastReceiver = GPSBroadcastReceiver()
         registerGpsReceiver()
