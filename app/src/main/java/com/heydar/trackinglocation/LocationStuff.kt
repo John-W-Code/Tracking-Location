@@ -4,25 +4,35 @@ import android.location.Location
 import kotlin.math.sin
 
 /// JW location
-class MyLocation (var myLong : Double, var myLat : Double){
+class MyLocation (var long : Double, var lat : Double){
+    var myLong = long
+    var myLat = lat
+
     fun isEmpty() : Boolean{
         return (myLong == 0.0) && (myLat == 0.0)
     }
     fun setLocation(location: Location?){
         if (location != null) {
-            this.myLong = location.longitude
-            this.myLat = location.latitude
+            myLong = location.longitude
+            myLat = location.latitude
         } else {
-            this.myLong = 0.0
-            this.myLat = 0.0
+            myLong = 0.0
+            myLat = 0.0
         }
+    }
+    fun toText() : String {
+        return String.format("%S  -  %S", myLong, myLat)
+    }
+    fun copyLocation(from : MyLocation) {
+        this.myLong = from.myLong
+        this.myLat  = from.myLat
     }
 }
 
 class MyCounting() {
-    var startLocation = MyLocation(4.9150267, 52.3733383)
-    var lastLocation  = MyLocation(0.0, 0.0)
-    var currentLocation = MyLocation(0.0, 0.0)
+    val startLocation = MyLocation(4.9150267, 52.3733383)
+    val lastLocation  = MyLocation(0.0, 0.0)
+    val currentLocation = MyLocation(0.0, 0.0)
     var numberOfRounds: Int = 0
     var running: Boolean = true // are we counting rounds
     var outside: Boolean = false  // were we outside maxdelta
@@ -33,12 +43,11 @@ class MyCounting() {
     // if running then check if next round is reached
     fun updateLocation(location: Location?){
         if (location != null) {
-            lastLocation = currentLocation
-            currentLocation.myLong = location.longitude
-            currentLocation.myLat = location.latitude
+            lastLocation.copyLocation(currentLocation)
+            currentLocation.setLocation(location)
             distance = differenceMeter(startLocation, currentLocation)
             if (running) {
-                if (outside && distance < minDelta){
+                if (outside && (distance < minDelta)){
                     numberOfRounds += 1
                     outside = false
                 }
@@ -47,7 +56,7 @@ class MyCounting() {
         }
     }
     fun setStartLocation() {
-        startLocation = currentLocation
+        startLocation.copyLocation(currentLocation)
     }
 
 }

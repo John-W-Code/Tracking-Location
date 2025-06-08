@@ -49,10 +49,14 @@ class rounds : Fragment() {
         //location
         locationViewModel = ViewModelProviderSingleton.getLocationViewModel()
         locationViewModel.locationData.observe(this) { location ->
-            currentTV.text = String.format("%S  -  %S", location.latitude, location.longitude)
-            distanceTV.text = counting.distance.toString()
             counting.updateLocation(location)
+            currentTV.text = counting.currentLocation.toText()
+            distanceTV.text = counting.distance.toString()
+            markTV.text = counting.startLocation.toText()
             Log.d("Location", "rounds.onCreate. distance: ${counting.distance}")
+            Log.d("Location", "rounds.onCreate. current: ${counting.currentLocation.toText()}")
+            Log.d("Location", "rounds.onCreate. start  : ${counting.startLocation.toText()}")
+            Log.d("Location", "rounds.onCreate. old    : ${counting.lastLocation.toText()}")
         }
 
         arguments?.let {
@@ -78,7 +82,7 @@ class rounds : Fragment() {
 
         // hide some fields
         startReceiveLocationsBTN.isVisible = true
-        markTV.isVisible     = false
+        markTV.isVisible     = true
         currentTV.isVisible  = true
         distanceTV.isVisible = true
         countTV.setBackgroundResource(R.drawable.circle_grey)
