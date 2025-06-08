@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.heydar.trackinglocation"
+    namespace = "com.JW.trackinglocation"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.heydar.trackinglocation"
+        applicationId = "com.JW.trackinglocation"
         minSdk = 24
         targetSdk = 35
         versionCode = 1

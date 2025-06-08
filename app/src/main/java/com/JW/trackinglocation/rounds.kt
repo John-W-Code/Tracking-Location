@@ -1,4 +1,4 @@
-package com.heydar.trackinglocation
+package com.JW.trackinglocation
 
 import android.os.Bundle
 import android.util.Log
@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.view.isVisible
 
 
@@ -27,6 +26,10 @@ private lateinit var currentTV: TextView
 private lateinit var distanceTV: TextView
 private lateinit var countTV: TextView
 
+// JW vars
+var oldLocation = MyLocation(0.0, 0.0)
+val counting = MyCounting()
+
 /**
  * A simple [Fragment] subclass.
  * Use the [rounds.newInstance] factory method to
@@ -34,33 +37,15 @@ private lateinit var countTV: TextView
  */
 class rounds : Fragment() {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
+    private var param1: Int = 0
     private var param2: String? = null
     private lateinit var locationViewModel: MainViewModel
-
-    // JW vars
-    var oldLocation = MyLocation(0.0, 0.0)
-    val counting = MyCounting()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //location
-        locationViewModel = ViewModelProviderSingleton.getLocationViewModel()
-        locationViewModel.locationData.observe(this) { location ->
-            counting.updateLocation(location)
-            currentTV.text = counting.currentLocation.toText()
-            distanceTV.text = counting.distance.toString()
-            markTV.text = counting.startLocation.toText()
-            Log.d("Location", "rounds.onCreate. distance: ${counting.distance}")
-            Log.d("Location", "rounds.onCreate. current: ${counting.currentLocation.toText()}")
-            Log.d("Location", "rounds.onCreate. start  : ${counting.startLocation.toText()}")
-            Log.d("Location", "rounds.onCreate. old    : ${counting.lastLocation.toText()}")
-        }
-
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
+            param1 = it.getInt(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
     }
@@ -71,6 +56,10 @@ class rounds : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_rounds, container, false)
+        counting.setContext(this.context)
+        counting.initSounds()
+
+        //location
         startReceiveLocationsBTN    = view.findViewById(R.id.start_receive_locations_btn)
         markStartLocationBTN        = view.findViewById(R.id.mark_start_location_btn)
         startCountingBTN            = view.findViewById(R.id.start_counting_rounds_btn)
@@ -90,8 +79,22 @@ class rounds : Fragment() {
         // set the button events
         markStartLocationBTN.setOnClickListener {
             counting.setStartLocation()
-            Toast.makeText(activity, "Button clicked!", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(activity, "Button clicked!", Toast.LENGTH_SHORT).show()
             Log.d("JW", "markStartLocationBTN pressed")
+        }
+
+        startCountingBTN.setOnClickListener {
+            if (counting.toggleCounting()) {
+                // we are counting (again)
+                startCountingBTN.text = getString(R.string.pause_counting_rounds)
+            }
+            else {
+                startCountingBTN.text = getString(R.string.start_counting_rounds)
+            }
+        }
+
+        zeroCountBTN.setOnClickListener {
+            counting.resetCount()
         }
 
         return view
@@ -102,7 +105,36 @@ class rounds : Fragment() {
         Log.d("JW", "rounds.onViewCreated")
         distanceTV.text = "ONE"
         countTV.text = "---"
-}
+
+        locationViewModel = ViewModelProviderSingleton.getLocationViewModel()
+        locationViewModel.locationData.observe(viewLifecycleOwner) { location ->
+            Log.d("TEST", this.toString())
+            counting.setLocation(location)
+            currentTV.text = counting.currentLocation.toText()
+            distanceTV.text = String.format("%S m", counting.distance.toString())
+            markTV.text = counting.startLocation.toText()
+            countTV.text = counting.numberOfRounds.toString()
+            if (counting.running)  {countTV.setBackgroundResource(R.drawable.circle_red)}
+            else {countTV.setBackgroundResource(R.drawable.circle_grey)}
+            Log.d("Location", "rounds.onCreate. distance: ${counting.distance}")
+            Log.d("Location", "rounds.onCreate. #laps: ${counting.numberOfRounds}")
+            //Log.d("Location", "rounds.onCreate. current: ${counting.currentLocation.toText()}")
+            //Log.d("Location", "rounds.onCreate. start  : ${counting.startLocation.toText()}")
+            //Log.d("Location", "rounds.onCreate. old    : ${counting.lastLocation.toText()}")
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        //locationViewModel.locationData.removeObservers(viewLifecycleOwner)
+        Log.d("onPause", viewLifecycleOwner.toString())
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        locationViewModel.locationData.removeObservers(viewLifecycleOwner)
+        Log.d("onDestroy", viewLifecycleOwner.toString())
+    }
 
     companion object {
         /**
@@ -115,10 +147,10 @@ class rounds : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(param1: Int, param2: String) =
             rounds().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
+                    putInt(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
                 }
             }

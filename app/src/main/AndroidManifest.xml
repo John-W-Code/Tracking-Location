@@ -27,7 +27,7 @@
         <activity
             android:name=".EnableGPSActivity"
             android:theme="@style/Theme.AppCompat.Light.Dialog"
-            android:exported="false" />
+            android:exported="false"/>
 
         <service
             android:name=".location.ForegroundUpdateLocationService"

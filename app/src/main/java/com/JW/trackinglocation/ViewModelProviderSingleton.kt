@@ -1,4 +1,4 @@
-package com.heydar.trackinglocation
+package com.JW.trackinglocation
 
 object ViewModelProviderSingleton {
     private var locationViewModel: MainViewModel? = null

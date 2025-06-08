@@ -1,10 +1,10 @@
-package com.heydar.trackinglocation.location
+package com.JW.trackinglocation.location
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.location.LocationManager
-import com.heydar.trackinglocation.EnableGPSActivity
+import com.JW.trackinglocation.EnableGPSActivity
 
 
 class GPSBroadcastReceiver : BroadcastReceiver() {

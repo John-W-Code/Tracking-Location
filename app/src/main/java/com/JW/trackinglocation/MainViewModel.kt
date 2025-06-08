@@ -1,4 +1,4 @@
-package com.heydar.trackinglocation
+package com.JW.trackinglocation
 
 import android.location.Location
 import androidx.lifecycle.LiveData

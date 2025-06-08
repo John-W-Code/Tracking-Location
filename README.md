@@ -24,7 +24,7 @@ Tracking Location is an Android application designed to track the user's locatio
 ```bash
 📦TrackingLocation
  ┣ 📂app
- ┃ ┣ 📂src/main/java/com/heydar/trackinglocation
+ ┃ ┣ 📂src/main/java/com/JW/trackinglocation
  ┃ ┃ ┣ 📂location
  ┃ ┃ ┃ ┣ 📜ForegroundUpdateLocationService.kt
  ┃ ┃ ┃ ┣ 📜LocationBroadcastReceiver.kt

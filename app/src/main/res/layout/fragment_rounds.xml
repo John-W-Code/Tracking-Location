@@ -130,6 +130,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/background_border"
+        android:paddingStart="10dp"
         android:paddingEnd="10dp"
         android:text="@string/Initial_distance"
         android:textAlignment="textEnd"

@@ -1,4 +1,4 @@
-package com.heydar.trackinglocation.location
+package com.JW.trackinglocation.location
 
 import android.Manifest
 import android.app.NotificationChannel
@@ -16,7 +16,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import com.heydar.trackinglocation.R
+import com.JW.trackinglocation.R
 
 class ForegroundUpdateLocationService : Service() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient

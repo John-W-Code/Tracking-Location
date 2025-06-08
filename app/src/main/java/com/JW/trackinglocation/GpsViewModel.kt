@@ -1,4 +1,4 @@
-package com.heydar.trackinglocation
+package com.JW.trackinglocation
 
 import android.app.Application
 import android.content.Context

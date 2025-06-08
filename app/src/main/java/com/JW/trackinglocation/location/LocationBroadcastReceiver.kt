@@ -1,4 +1,4 @@
-package com.heydar.trackinglocation.location
+package com.JW.trackinglocation.location
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -6,7 +6,8 @@ import android.content.Intent
 import android.location.Location
 import android.util.Log
 import com.google.android.gms.location.LocationResult
-import com.heydar.trackinglocation.ViewModelProviderSingleton
+import com.JW.trackinglocation.ViewModelProviderSingleton
+import com.JW.trackinglocation.counting
 
 class LocationBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -26,5 +27,6 @@ class LocationBroadcastReceiver : BroadcastReceiver() {
         Log.d("TAG", "onLocationChanged: " + location.latitude + "  " + location.longitude)
         val viewModel = ViewModelProviderSingleton.getLocationViewModel()
         viewModel.updateLocation(location)
+        counting.setLocation(location)
     }
 }

@@ -1,8 +1,9 @@
-package com.heydar.trackinglocation
+package com.JW.trackinglocation
 
 import android.Manifest
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -13,8 +14,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.heydar.trackinglocation.location.ForegroundUpdateLocationService
-import com.heydar.trackinglocation.location.GPSBroadcastReceiver
+import com.JW.trackinglocation.location.ForegroundUpdateLocationService
+import com.JW.trackinglocation.location.GPSBroadcastReceiver
 
 
 class MainActivity() : AppCompatActivity() {
@@ -35,13 +36,10 @@ class MainActivity() : AppCompatActivity() {
         }
     }
 
-    // JW vars moved to rounds.kt Fragment
-    // var oldLocation = MyLocation(0.0, 0.0)
-    // val counting = MyCounting()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         val roundsFragment = rounds()
 
         //JW
@@ -55,14 +53,6 @@ class MainActivity() : AppCompatActivity() {
             val gpsIntent = Intent(this, EnableGPSActivity::class.java)
             startActivity(gpsIntent)
         }
-/*
-        locationViewModel = ViewModelProviderSingleton.getLocationViewModel()
-        locationViewModel.locationData.observe(this) { location ->
-            //tvLocation.text = String.format("%S  -  %S", location.latitude, location.longitude)
-            counting.updateLocation(location)
-            Log.d("Location", "onCreate. distance: ${counting.distance}")
-        }
-*/
 
         gpsBroadcastReceiver = GPSBroadcastReceiver()
         registerGpsReceiver()
