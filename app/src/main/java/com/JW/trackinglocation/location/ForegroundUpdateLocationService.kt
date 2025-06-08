@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import com.JW.trackinglocation.MainActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -53,7 +54,12 @@ class ForegroundUpdateLocationService : Service() {
         fusedLocationClient.requestLocationUpdates(locationRequest, locationPendingIntent)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(NOTIFICATION_ID, "Channel title", NotificationManager.IMPORTANCE_HIGH)
+            val intent = Intent(this, MainActivity::class.java).apply {
+                intent?.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
+            val channel = NotificationChannel(NOTIFICATION_ID, "Channel title", NotificationManager.IMPORTANCE_LOW)
 
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
@@ -62,6 +68,7 @@ class ForegroundUpdateLocationService : Service() {
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle("Location Tracking")
                 .setContentText("Location service is active")
+                .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .build()
             startForeground(1, notification)

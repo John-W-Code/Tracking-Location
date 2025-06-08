@@ -17,30 +17,27 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 //JW
-private lateinit var startReceiveLocationsBTN: Button
-private lateinit var markStartLocationBTN: Button
-private lateinit var startCountingBTN: Button
-private lateinit var zeroCountBTN: Button
-private lateinit var markTV: TextView
-private lateinit var currentTV: TextView
-private lateinit var distanceTV: TextView
-private lateinit var countTV: TextView
-
-// JW vars
-var oldLocation = MyLocation(0.0, 0.0)
 val counting = MyCounting()
 
 /**
  * A simple [Fragment] subclass.
- * Use the [rounds.newInstance] factory method to
+ * Use the [Rounds.newInstance] factory method to
  * create an instance of this fragment.
  */
-class rounds : Fragment() {
+class Rounds : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: Int = 0
     private var param2: String? = null
+    //JW
     private lateinit var locationViewModel: MainViewModel
-
+    private lateinit var startReceiveLocationsBTN: Button
+    private lateinit var markStartLocationBTN: Button
+    private lateinit var startCountingBTN: Button
+    private lateinit var zeroCountBTN: Button
+    private lateinit var markTV: TextView
+    private lateinit var currentTV: TextView
+    private lateinit var distanceTV: TextView
+    private lateinit var countTV: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -70,11 +67,12 @@ class rounds : Fragment() {
         countTV                     = view.findViewById(R.id.round_count_text_view)
 
         // hide some fields
-        startReceiveLocationsBTN.isVisible = true
+        startReceiveLocationsBTN.isVisible = false
         markTV.isVisible     = true
         currentTV.isVisible  = true
         distanceTV.isVisible = true
         countTV.setBackgroundResource(R.drawable.circle_grey)
+        startCountingBTN.isEnabled = false
 
         // set the button events
         markStartLocationBTN.setOnClickListener {
@@ -87,8 +85,7 @@ class rounds : Fragment() {
             if (counting.toggleCounting()) {
                 // we are counting (again)
                 startCountingBTN.text = getString(R.string.pause_counting_rounds)
-            }
-            else {
+            } else {
                 startCountingBTN.text = getString(R.string.start_counting_rounds)
             }
         }
@@ -103,7 +100,7 @@ class rounds : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("JW", "rounds.onViewCreated")
-        distanceTV.text = "ONE"
+        distanceTV.text = "- m"
         countTV.text = "---"
 
         locationViewModel = ViewModelProviderSingleton.getLocationViewModel()
@@ -115,7 +112,14 @@ class rounds : Fragment() {
             markTV.text = counting.startLocation.toText()
             countTV.text = counting.numberOfRounds.toString()
             if (counting.running)  {countTV.setBackgroundResource(R.drawable.circle_red)}
-            else {countTV.setBackgroundResource(R.drawable.circle_grey)}
+            else                   {countTV.setBackgroundResource(R.drawable.circle_grey)}
+            if (counting.startSet) {
+                startCountingBTN.isEnabled = true
+                markStartLocationBTN.text = getString(R.string.mark_start_location).plus(" /")
+            }
+            else {
+                startCountingBTN.isEnabled = false
+            }
             Log.d("Location", "rounds.onCreate. distance: ${counting.distance}")
             Log.d("Location", "rounds.onCreate. #laps: ${counting.numberOfRounds}")
             //Log.d("Location", "rounds.onCreate. current: ${counting.currentLocation.toText()}")
@@ -148,7 +152,7 @@ class rounds : Fragment() {
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: Int, param2: String) =
-            rounds().apply {
+            Rounds().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)

@@ -1,6 +1,7 @@
 package com.JW.trackinglocation
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ActivityInfo
@@ -36,11 +37,12 @@ class MainActivity() : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        val roundsFragment = rounds()
+        val roundsFragment = Rounds()
 
         //JW
         Log.d("JW", "MainActivity.onCreate")
