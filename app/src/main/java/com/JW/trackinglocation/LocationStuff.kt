@@ -3,10 +3,16 @@ package com.JW.trackinglocation
 import android.content.Context
 import android.location.Location
 import android.media.MediaPlayer
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
+import java.sql.Time
+import java.time.Duration
+import java.time.LocalDateTime
 import kotlin.math.atan2
 import kotlin.math.sin
 import kotlin.math.sqrt
+
 
 /// JW location
 class MyLocation (lat : Double, long : Double){
@@ -40,8 +46,13 @@ class MyCounting() {
     var outside:  Boolean = false // are we outside maxDelta
     var startSet: Boolean = false // Is the startLocation set
     var distance = 0
+    var distanceTotal = 0
+    var speedTotal = 0.0
     var recordings = ArrayList<Int>() // the list with all recorded numbers
     var maxRecordings: Int = 0
+    var startTime = LocalDateTime.now()
+    var currentTime = LocalDateTime.now()
+    var duration: Duration = Duration.ZERO
 
     // move currentLocation to lastLocation
     // if running then check if next round is reached
@@ -57,6 +68,10 @@ class MyCounting() {
                     playRound(numberOfRounds)
                 }
                 outside = outside or (distance > maxDelta)
+                duration = Duration.between(startTime, LocalDateTime.now())
+                distanceTotal += differenceMeter(currentLocation, lastLocation)
+                speedTotal = (distanceTotal / duration.toSeconds().toDouble()) * 3.6
+
             }
         }
     }
@@ -69,12 +84,17 @@ class MyCounting() {
 
     fun toggleCounting() : Boolean {
         running = !running
+        if (running) startTime = LocalDateTime.now()
         return running
     }
 
     fun resetCount (){
         numberOfRounds = 0
         outside = false
+        duration = Duration.ZERO
+        startTime = LocalDateTime.now()
+        distanceTotal = 0
+        speedTotal = 0.0
     }
     // Sound stuff
     fun initSounds(){
@@ -172,13 +192,4 @@ fun differenceMeter(old: MyLocation?, new: MyLocation?) : Int{
     }
 }
 
-fun nextRound(old: MyLocation?, new: MyLocation?, check: Boolean): Triple<Boolean, Boolean, Int>{// return new round, outside marker, distance
-    val distance = differenceMeter(old, new)
-    return if (check){ // been outside from marker
-        Triple(distance < minDelta, distance >= minDelta, distance)
-    }
-    else { // not yet outside from marker
-        Triple(false, distance > maxDelta, distance)
-    }
-}
 // init all sound files

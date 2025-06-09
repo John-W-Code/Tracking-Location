@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TrackingLocation</string>
+    <string name="app_name">Record laps</string>
     <string name="gps_message">You must turn on GPS to use the app.</string>
     <string name="enable_gps">Enable GPS</string>
 
@@ -27,5 +27,9 @@
     <string name="Dash">-</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="time">time</string>
+    <string name="distance">distance</string>
+    <string name="speed">speed</string>
+    <string name="total">total</string>
 
 </resources>
