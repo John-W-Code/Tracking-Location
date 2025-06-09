@@ -1,5 +1,7 @@
 package com.JW.trackinglocation
 
+import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -7,7 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TableLayout
+import android.widget.TableRow
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 
 
@@ -38,6 +43,17 @@ class Rounds : Fragment() {
     private lateinit var currentTV: TextView
     private lateinit var distanceTV: TextView
     private lateinit var countTV: TextView
+    private lateinit var infoTable: TableLayout
+    private lateinit var totalTime: TextView
+    private lateinit var totalDistance: TextView
+    private lateinit var totalSpeed: TextView
+    private lateinit var lapRow: TableRow
+
+    fun getCellAt(table: TableLayout, rowIndex: Int, columnIndex: Int): View {
+        val row = table.getChildAt(rowIndex) as TableRow
+        return row.getChildAt(columnIndex)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -65,12 +81,19 @@ class Rounds : Fragment() {
         currentTV                   = view.findViewById(R.id.current_position_text_view)
         distanceTV                  = view.findViewById(R.id.distance_text_view)
         countTV                     = view.findViewById(R.id.round_count_text_view)
+        infoTable                   = view.findViewById(R.id.tableLayout)
+        lapRow                      = view.findViewById(R.id.lap_row)
+        totalTime                   = getCellAt(infoTable, 1, 1) as TextView
+        totalDistance               = getCellAt(infoTable, 1, 2) as TextView
+        totalSpeed                  = getCellAt(infoTable, 1, 3) as TextView
 
-        // hide some fields
+        // hide / show some fields
         startReceiveLocationsBTN.isVisible = false
-        markTV.isVisible     = true
-        currentTV.isVisible  = true
+        markTV.isVisible     = false
+        currentTV.isVisible  = false
         distanceTV.isVisible = true
+        infoTable.isVisible  = true
+        lapRow.isVisible     = false
         countTV.setBackgroundResource(R.drawable.circle_grey)
         startCountingBTN.isEnabled = false
 
@@ -82,8 +105,7 @@ class Rounds : Fragment() {
         }
 
         startCountingBTN.setOnClickListener {
-            if (counting.toggleCounting()) {
-                // we are counting (again)
+            if (counting.toggleCounting()) { // we are counting (again)
                 startCountingBTN.text = getString(R.string.pause_counting_rounds)
             } else {
                 startCountingBTN.text = getString(R.string.start_counting_rounds)
@@ -103,28 +125,42 @@ class Rounds : Fragment() {
         distanceTV.text = "- m"
         countTV.text = "---"
 
-        locationViewModel = ViewModelProviderSingleton.getLocationViewModel()
-        locationViewModel.locationData.observe(viewLifecycleOwner) { location ->
-            Log.d("TEST", this.toString())
-            counting.setLocation(location)
+
+        @SuppressLint("DefaultLocale")
+        fun displayAll() {
             currentTV.text = counting.currentLocation.toText()
-            distanceTV.text = String.format("%S m", counting.distance.toString())
+            distanceTV.text = if (counting.startSet) String.format("%S m", counting.distance.toString()) else "- m"
             markTV.text = counting.startLocation.toText()
             countTV.text = counting.numberOfRounds.toString()
             if (counting.running)  {countTV.setBackgroundResource(R.drawable.circle_red)}
             else                   {countTV.setBackgroundResource(R.drawable.circle_grey)}
             if (counting.startSet) {
                 startCountingBTN.isEnabled = true
-                markStartLocationBTN.text = getString(R.string.mark_start_location).plus(" /")
+                markStartLocationBTN.text = getString(R.string.mark_start_location).plus(" \u2714")
             }
             else {
                 startCountingBTN.isEnabled = false
             }
+            // display overview
+
+            totalTime.text     = String.format("%02d:%02d", counting.duration.toMinutesPart(), counting.duration.toSecondsPart())
+            totalDistance.text = String.format("%.3f km",   counting.distanceTotal.toLong() / 1000.0)
+            totalSpeed.text    = String.format("%.2f km/h", counting.speedTotal)
+
+
             Log.d("Location", "rounds.onCreate. distance: ${counting.distance}")
             Log.d("Location", "rounds.onCreate. #laps: ${counting.numberOfRounds}")
             //Log.d("Location", "rounds.onCreate. current: ${counting.currentLocation.toText()}")
             //Log.d("Location", "rounds.onCreate. start  : ${counting.startLocation.toText()}")
             //Log.d("Location", "rounds.onCreate. old    : ${counting.lastLocation.toText()}")
+        }
+
+        locationViewModel = ViewModelProviderSingleton.getLocationViewModel()
+        locationViewModel.locationData.observe(viewLifecycleOwner) { location ->
+            Log.d("TEST", this.toString())
+            counting.setLocation(location)
+            displayAll()
+
         }
     }
 

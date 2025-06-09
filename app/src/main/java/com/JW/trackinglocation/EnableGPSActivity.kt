@@ -37,7 +37,7 @@ class EnableGPSActivity : AppCompatActivity() {
         enableGPS!!.setOnClickListener {
             if (!Utils.isLocationAvailable(this)) {
                 val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
             } else {
                 finish()
