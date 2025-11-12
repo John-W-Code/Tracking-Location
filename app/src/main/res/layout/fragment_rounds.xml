@@ -101,7 +101,7 @@
         android:id="@+id/round_count_text_view"
         android:layout_width="100pt"
         android:layout_height="100pt"
-        android:background="@drawable/circle_red"
+        android:background="@drawable/circle_grey"
         android:gravity="center"
         android:text="@string/Initial_round_number"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
@@ -124,6 +124,7 @@
         android:paddingEnd="10dp"
         android:text="@string/Initial_distance"
         android:textAlignment="textEnd"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

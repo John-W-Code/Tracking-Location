@@ -133,7 +133,7 @@ class Rounds : Fragment() {
             distanceTV.text = if (counting.startSet) String.format("%S m", counting.distance.toString()) else "- m"
             markTV.text = counting.startLocation.toText()
             countTV.text = counting.numberOfRounds.toString()
-            if (counting.running)  {countTV.setBackgroundResource(R.drawable.circle_red)}
+            if (counting.running)  {countTV.setBackgroundResource(R.drawable.circle_green)}
             else                   {countTV.setBackgroundResource(R.drawable.circle_grey)}
             if (counting.startSet) {
                 startCountingBTN.isEnabled = true
