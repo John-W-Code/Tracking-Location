@@ -22,6 +22,7 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 //JW
+@SuppressLint("StaticFieldLeak")
 val counting = MyCounting()
 
 /**
