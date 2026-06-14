@@ -18,13 +18,13 @@ class LocationBroadcastReceiver : BroadcastReceiver() {
                     updateLocation(location)
                 }
             } else {
-                Log.d("TAG", "onReceive: null")
+                Log.d("JW: onReceive", "onReceive: null")
             }
         }
     }
 
     private fun updateLocation(location: Location) {
-        Log.d("TAG", "onLocationChanged: " + location.latitude + "  " + location.longitude)
+        Log.d("JW: updateLocation", "onLocationChanged: " + location.latitude + "  " + location.longitude)
         val viewModel = ViewModelProviderSingleton.getLocationViewModel()
         viewModel.updateLocation(location)
         counting.setLocation(location)

@@ -143,31 +143,37 @@
 
             <TextView
                 android:id="@+id/hdr_time"
+                style="@style/TableCellText"
+                android:gravity="bottom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
-                android:width="80dp"
-                android:padding="10sp"
+                android:width="100dp"
+                android:padding="4sp"
                 android:text="@string/time"
                 android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/hdr_distance"
+                style="@style/TableCellText"
+                android:gravity="bottom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="2"
-                android:width="80dp"
-                android:padding="10sp"
+                android:width="100dp"
+                android:padding="4sp"
                 android:text="@string/distance"
                 android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/hdr_speed"
+                style="@style/TableCellText"
+                android:gravity="bottom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="3"
                 android:width="110dp"
-                android:padding="10sp"
+                android:padding="4sp"
                 android:text="@string/speed"
                 android:textColor="@color/black" />
         </TableRow>
@@ -178,44 +184,49 @@
 
             <TextView
                 android:id="@+id/hdr_total"
+                style="@style/TableCellText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="0"
-                android:padding="10sp"
+                android:gravity="top"
+                android:padding="4sp"
                 android:text="@string/total"
                 android:textAlignment="textEnd"
                 android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/textView5"
+                style="@style/TableCellText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
                 android:fontFamily="monospace"
-                android:padding="10sp"
+                android:padding="4sp"
                 android:text=""
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/textView6"
+                style="@style/TableCellText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="2"
                 android:fontFamily="monospace"
-                android:padding="10sp"
+                android:padding="4sp"
                 android:text=""
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/textView7"
+                style="@style/TableCellText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="3"
                 android:fontFamily="monospace"
                 android:includeFontPadding="false"
-                android:padding="10sp"
+                android:padding="4sp"
                 android:text=""
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 android:textColor="@color/black" />
@@ -223,48 +234,107 @@
 
         <TableRow
             android:id="@+id/lap_row"
+            style="@style/TableCellText"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/hdr_per_lap"
+                style="@style/TableCellText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="0"
-                android:padding="10sp"
+                android:padding="4sp"
                 android:text="@string/last_lap"
                 android:textAlignment="textEnd"
                 android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/textView8"
+                style="@style/TableCellText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
                 android:fontFamily="monospace"
-                android:padding="10sp"
+                android:padding="4sp"
                 android:text=""
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/textView9"
+                style="@style/TableCellText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="2"
                 android:fontFamily="monospace"
-                android:padding="10sp"
+                android:padding="4sp"
                 android:text=""
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/textView10"
+                style="@style/TableCellText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="3"
                 android:fontFamily="monospace"
-                android:padding="10sp"
+                android:padding="4sp"
+                android:text=""
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:textColor="@color/black" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/best_lap_row"
+            style="@style/TableCellText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/hdr_best_lap"
+                style="@style/TableCellText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:padding="4sp"
+                android:text="@string/best_lap"
+                android:textAlignment="textEnd"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/best_lap_time"
+                style="@style/TableCellText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:fontFamily="monospace"
+                android:padding="4sp"
+                android:text=""
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/best_lap_distance"
+                style="@style/TableCellText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:fontFamily="monospace"
+                android:padding="4sp"
+                android:text=""
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/best_lap_speed"
+                style="@style/TableCellText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="3"
+                android:fontFamily="monospace"
+                android:padding="4sp"
                 android:text=""
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 android:textColor="@color/black" />

@@ -33,10 +33,10 @@ class ForegroundUpdateLocationService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 50)
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 500)
             .setWaitForAccurateLocation(true)
-            .setMinUpdateIntervalMillis(20)
-            .setMaxUpdateDelayMillis(50)
+            .setMinUpdateIntervalMillis(500)
+            .setMaxUpdateDelayMillis(500)
             .build()
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
@@ -81,8 +81,11 @@ class ForegroundUpdateLocationService : Service() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+        if (::locationPendingIntent.isInitialized) {
+            fusedLocationClient.removeLocationUpdates(locationPendingIntent)
+        }
         unregisterReceiver(gpsBroadcastReceiver)
+        super.onDestroy()
     }
 
     companion object {

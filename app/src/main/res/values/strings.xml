@@ -32,5 +32,6 @@
     <string name="speed">speed</string>
     <string name="total">total</string>
     <string name="last_lap">last lap</string>
+    <string name="best_lap">best lap</string>
 
 </resources>

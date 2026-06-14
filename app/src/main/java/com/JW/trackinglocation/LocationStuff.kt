@@ -46,8 +46,15 @@ class MyCounting() {
     var outside:  Boolean = false // are we outside maxDelta
     var startSet: Boolean = false // Is the startLocation set
     var distance = 0
-    var distanceTotal = 0
+    var distanceTotal = 0.0
     var speedTotal = 0.0
+    var lapDistance = 0.0
+    var lapSpeed = 0.0
+    var lapTime = Duration.ZERO
+    var lapStartTime = LocalDateTime.now()
+    var lapStartDistance = 0.0
+    var bestLapTime = Duration.ZERO
+    var bestLapDistance = 0.0
     var recordings = ArrayList<Int>() // the list with all recorded numbers
     var maxRecordings: Int = 0
     var startTime = LocalDateTime.now()
@@ -57,21 +64,42 @@ class MyCounting() {
     // move currentLocation to lastLocation
     // if running then check if next round is reached
     fun setLocation(location: Location?){
+        var travelled = 0.0
         if (location != null) {
             lastLocation.copyLocation(currentLocation)
             currentLocation.setLocation(location)
-            distance = differenceMeter(startLocation, currentLocation)
+            distance = differenceMeter(startLocation, currentLocation).toInt()
             if (running) {
                 if (outside && (distance < minDelta)){
                     numberOfRounds += 1
                     outside = false
                     playRound(numberOfRounds)
+
+                    // Calculate lap stats
+                    val now = LocalDateTime.now()
+                    lapTime = Duration.between(lapStartTime, now)
+                    lapDistance = distanceTotal - lapStartDistance
+                    if (lapTime.toSeconds() > 0) {
+                        lapSpeed = (lapDistance / lapTime.toSeconds()) * 3.6
+                    }
+
+                    // Check for best lap
+                    if (bestLapTime == Duration.ZERO || lapTime < bestLapTime) {
+                        bestLapTime = lapTime
+                        bestLapDistance = lapDistance
+                    }
+
+                    // Reset lap markers
+                    lapStartTime = now
+                    lapStartDistance = distanceTotal
                 }
                 outside = outside or (distance > maxDelta)
                 duration = Duration.between(startTime, LocalDateTime.now()).plus(durationPast)
-                distanceTotal += differenceMeter(currentLocation, lastLocation)
-                if (duration.toSeconds() == 0L) {  speedTotal = 0.0 }
-                else {                             speedTotal = (distanceTotal / duration.toSeconds().toDouble()) * 3.6}
+                travelled = differenceMeter(lastLocation, currentLocation)
+                if (travelled in 1.0..<100.0) distanceTotal += travelled // ignore further than 100 meter. e.g. after a pause and long movement
+                Log.d("JW: distance", (travelled).toString() + " -> " + distanceTotal.toString())
+                if (duration.toSeconds() == 0L) { speedTotal = 0.0}
+                else {                            speedTotal = (distanceTotal / duration.toSeconds()) * 3.6}
 
             }
         }
@@ -79,6 +107,7 @@ class MyCounting() {
 
     fun setStartLocation() {
         startLocation.copyLocation(currentLocation)
+        distance = differenceMeter(startLocation, currentLocation).toInt()
         outside = false // we start on the start location
         startSet = true // the startLocation is set
     }
@@ -88,6 +117,8 @@ class MyCounting() {
         if (running) {
             startTime = LocalDateTime.now()
             durationPast = duration
+            lapStartTime = startTime
+            lapStartDistance = distanceTotal
         }
         return running
     }
@@ -98,8 +129,13 @@ class MyCounting() {
         duration = Duration.ZERO
         durationPast = Duration.ZERO
         startTime = LocalDateTime.now()
-        distanceTotal = 0
+        distanceTotal = 0.0
         speedTotal = 0.0
+        lapDistance = 0.0
+        lapSpeed = 0.0
+        lapTime = Duration.ZERO
+        bestLapTime = Duration.ZERO
+        bestLapDistance = 0.0
     }
     // Sound stuff
     fun initSounds(){
@@ -151,7 +187,7 @@ class MyCounting() {
 
     companion object {
         private const val DEFAULT_VOLUME = 1.0F
-        private const val TAG = "ForegroundOnlyLocationService"
+        private const val TAG = "JW: ForegroundOnlyLocationService"
         /*
         private const val PACKAGE_NAME = "com.example.android.whileinuselocation"
         internal const val ACTION_FOREGROUND_ONLY_LOCATION_BROADCAST =
@@ -179,10 +215,19 @@ fun degreesToRadians(degrees : Double) : Double{
     return degrees * Math.PI / 180.0
 }
 
-fun differenceMeter(old: MyLocation?, new: MyLocation?) : Int{
+fun differenceMeter(old: MyLocation?, new: MyLocation?) : Double{
     if ((old == null) || (new == null)) {
-        return -1
+        return -1.0
     }
+    val results = FloatArray(1)
+    android.location.Location.distanceBetween(
+        old.myLat, old.myLong,
+        new.myLat, new.myLong,
+        results
+    )
+    Log.d("JW: differenceMeter", results[0].toString() + " m")
+    return results[0].toDouble()
+/*
     else {
         val earthRadiusM = 6371000.0
         val dLat = degreesToRadians(old.myLat - new.myLat)
@@ -195,6 +240,7 @@ fun differenceMeter(old: MyLocation?, new: MyLocation?) : Int{
         val c = 2 * atan2(sqrt(a), sqrt(1 - a))
         return (earthRadiusM * c).toInt()
     }
+*/
 }
 
 // init all sound files

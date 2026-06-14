@@ -85,7 +85,7 @@ class MainActivity() : AppCompatActivity() {
 
     private fun startLocationService() {
         val startServiceIntent = Intent(this, ForegroundUpdateLocationService::class.java)
-        startService(startServiceIntent)
+        // start the servicestartService(startServiceIntent) Only needed when starting counting
     }
 
     private fun openAppSettings() {
