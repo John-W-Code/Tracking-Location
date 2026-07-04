@@ -33,5 +33,7 @@
     <string name="total">total</string>
     <string name="last_lap">last lap</string>
     <string name="best_lap">best lap</string>
+    <string name="round">R</string>
+    <string name="build_format">build: %1$s</string>
 
 </resources>

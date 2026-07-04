@@ -18,6 +18,9 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.JW.trackinglocation.location.ForegroundUpdateLocationService
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -53,22 +56,27 @@ class Rounds : Fragment() {
     private lateinit var currentTV: TextView
     private lateinit var distanceTV: TextView
     private lateinit var countTV: TextView
-    private lateinit var infoTable: TableLayout
     private lateinit var totalTime: TextView
     private lateinit var totalDistance: TextView
     private lateinit var totalSpeed: TextView
-    private lateinit var lapTime: TextView
-    private lateinit var lapDistance: TextView
-    private lateinit var lapSpeed: TextView
-    private lateinit var lapRow: TableRow
-    private lateinit var bestLapTime: TextView
-    private lateinit var bestLapDistance: TextView
-    private lateinit var bestLapSpeed: TextView
-    private lateinit var bestLapRow: TableRow
+    private lateinit var buildVersionTV: TextView
+    private lateinit var roundsRecyclerView: RecyclerView
+    private lateinit var roundAdapter: RoundAdapter
+    private lateinit var sortRoundBTN: Button
+    private lateinit var sortTimeBTN: Button
+    private lateinit var sortDistanceBTN: Button
+    private lateinit var sortSpeedBTN: Button
+    private var sortColumn: String = "number"
+    private var sortAscending: Boolean = true
 
-    fun getCellAt(table: TableLayout, rowIndex: Int, columnIndex: Int): View {
-        val row = table.getChildAt(rowIndex) as TableRow
-        return row.getChildAt(columnIndex)
+    private fun setSort(column: String) {
+        if (sortColumn == column) {
+            sortAscending = !sortAscending
+        } else {
+            sortColumn = column
+            sortAscending = true
+        }
+        displayAll()
     }
 
     @SuppressLint("DefaultLocale")
@@ -92,25 +100,33 @@ class Rounds : Fragment() {
         totalDistance.text = String.format(Locale("nl", "NL"), "%,.3f km",   counting.distanceTotal / 1000.0)
         totalSpeed.text    = String.format(Locale("nl", "NL"), "%,.2f km/h", counting.speedTotal)
 
-        if (counting.numberOfRounds > 0) {
-            lapRow.isVisible = true
-            lapTime.text     = String.format("%02d:%02d", counting.lapTime.toMinutesPart(), counting.lapTime.toSecondsPart())
-            lapDistance.text = String.format(Locale("nl", "NL"), "%,.3f km",   counting.lapDistance / 1000.0)
-            lapSpeed.text    = String.format(Locale("nl", "NL"), "%,.2f km/h", counting.lapSpeed)
+        // Update rounds list with sorting
+        val sortedList = when (sortColumn) {
+            "number" -> if (sortAscending) counting.roundsList.sortedBy { it.number } else counting.roundsList.sortedByDescending { it.number }
+            "time" -> if (sortAscending) counting.roundsList.sortedBy { it.time } else counting.roundsList.sortedByDescending { it.time }
+            "distance" -> if (sortAscending) counting.roundsList.sortedBy { it.distance } else counting.roundsList.sortedByDescending { it.distance }
+            "speed" -> if (sortAscending) counting.roundsList.sortedBy { it.speed } else counting.roundsList.sortedByDescending { it.speed }
+            else -> counting.roundsList
         }
-        else lapRow.isVisible = false
+        roundAdapter.updateData(sortedList)
 
-        if (counting.bestLapTime != Duration.ZERO) {
-            bestLapRow.isVisible = true
-            bestLapTime.text     = String.format("%02d:%02d", counting.bestLapTime.toMinutesPart(), counting.bestLapTime.toSecondsPart())
-            bestLapDistance.text = String.format(Locale("nl", "NL"), "%,.3f km",   counting.bestLapDistance / 1000.0)
-            val bSpeed = if (counting.bestLapTime.toSeconds() > 0) (counting.bestLapDistance / counting.bestLapTime.toSeconds()) * 3.6 else 0.0
-            bestLapSpeed.text    = String.format(Locale("nl", "NL"), "%,.2f km/h", bSpeed)
-        }
-        else bestLapRow.isVisible = false
+        // Update sort indicators
+        updateSortIndicator(sortRoundBTN, "number")
+        updateSortIndicator(sortTimeBTN, "time")
+        updateSortIndicator(sortDistanceBTN, "distance")
+        updateSortIndicator(sortSpeedBTN, "speed")
 
         Log.d("JW: Location", "rounds.onCreate. distance: ${counting.distance}")
         Log.d("JW: Location", "rounds.onCreate. #laps: ${counting.numberOfRounds}")
+    }
+
+    private fun updateSortIndicator(button: Button, column: String) {
+        val drawableRes = if (sortColumn == column) {
+            if (sortAscending) R.drawable.ic_sort_down else R.drawable.ic_sort_up
+        } else {
+            R.drawable.ic_sort_both
+        }
+        button.setCompoundDrawablesWithIntrinsicBounds(0, 0, drawableRes, 0)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -140,27 +156,36 @@ class Rounds : Fragment() {
         currentTV                   = view.findViewById(R.id.current_position_text_view)
         distanceTV                  = view.findViewById(R.id.distance_text_view)
         countTV                     = view.findViewById(R.id.round_count_text_view)
-        infoTable                   = view.findViewById(R.id.tableLayout)
-        lapRow                      = view.findViewById(R.id.lap_row)
-        totalTime                   = getCellAt(infoTable, 1, 1) as TextView
-        totalDistance               = getCellAt(infoTable, 1, 2) as TextView
-        totalSpeed                  = getCellAt(infoTable, 1, 3) as TextView
-        lapTime                     = getCellAt(infoTable, 2, 1) as TextView
-        lapDistance                 = getCellAt(infoTable, 2, 2) as TextView
-        lapSpeed                    = getCellAt(infoTable, 2, 3) as TextView
-        bestLapRow                  = view.findViewById(R.id.best_lap_row)
-        bestLapTime                 = view.findViewById(R.id.best_lap_time)
-        bestLapDistance             = view.findViewById(R.id.best_lap_distance)
-        bestLapSpeed                = view.findViewById(R.id.best_lap_speed)
+        totalTime                   = view.findViewById(R.id.total_time_tv)
+        totalDistance               = view.findViewById(R.id.total_distance_tv)
+        totalSpeed                  = view.findViewById(R.id.total_speed_tv)
+        buildVersionTV              = view.findViewById(R.id.build_version_tv)
+        roundsRecyclerView           = view.findViewById(R.id.rounds_recycler_view)
+        sortRoundBTN                = view.findViewById(R.id.sort_round)
+        sortTimeBTN                 = view.findViewById(R.id.sort_time)
+        sortDistanceBTN             = view.findViewById(R.id.sort_distance)
+        sortSpeedBTN                = view.findViewById(R.id.sort_speed)
+
+        // setup recycler view
+        roundAdapter = RoundAdapter(emptyList())
+        roundsRecyclerView.layoutManager = LinearLayoutManager(context)
+        roundsRecyclerView.adapter = roundAdapter
+        LinearSnapHelper().attachToRecyclerView(roundsRecyclerView)
+
+        // setup sorting
+        sortRoundBTN.setOnClickListener { setSort("number") }
+        sortTimeBTN.setOnClickListener { setSort("time") }
+        sortDistanceBTN.setOnClickListener { setSort("distance") }
+        sortSpeedBTN.setOnClickListener { setSort("speed") }
+
+        // build version
+        buildVersionTV.text = getString(R.string.build_format, BuildConfig.BUILD_NUMBER)
 
         // hide / show some fields
         startReceiveLocationsBTN.isVisible = false
         markTV.isVisible     = false
         currentTV.isVisible  = false
         distanceTV.isVisible = true
-        infoTable.isVisible  = true
-        lapRow.isVisible     = false
-        bestLapRow.isVisible = false
         countTV.setBackgroundResource(R.drawable.circle_grey)
         startCountingBTN.isEnabled = false
 
@@ -193,6 +218,7 @@ class Rounds : Fragment() {
                 Log.d("JW", "startCountingBTN pressed --> OFF")
                 context?.stopService(serviceIntent)
             }
+            displayAll()
         }
 
         zeroCountBTN.setOnClickListener {

@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="TrackingLocation.app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-06-14T19:56:23.981811900Z">
+        <DropdownSelection timestamp="2026-07-04T19:23:59.593973800Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\johnw\.android\avd\Pixel_9_API_34.avd" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=5C241JEA311357" />
             </handle>
           </Target>
         </DropdownSelection>

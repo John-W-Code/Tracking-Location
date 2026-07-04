@@ -37,6 +37,13 @@ class MyLocation (lat : Double, long : Double){
     }
 }
 
+data class RoundData(
+    val number: Int,
+    val time: Duration,
+    val distance: Double,
+    val speed: Double
+)
+
 class MyCounting() {
     val startLocation = MyLocation(0.0, 0.0)
     val lastLocation  = MyLocation(0.0, 0.0)
@@ -55,6 +62,7 @@ class MyCounting() {
     var lapStartDistance = 0.0
     var bestLapTime = Duration.ZERO
     var bestLapDistance = 0.0
+    var roundsList = mutableListOf<RoundData>()
     var recordings = ArrayList<Int>() // the list with all recorded numbers
     var maxRecordings: Int = 0
     var startTime = LocalDateTime.now()
@@ -92,6 +100,9 @@ class MyCounting() {
                     // Reset lap markers
                     lapStartTime = now
                     lapStartDistance = distanceTotal
+
+                    // Add to rounds list
+                    roundsList.add(RoundData(numberOfRounds, lapTime, lapDistance, lapSpeed))
                 }
                 outside = outside or (distance > maxDelta)
                 duration = Duration.between(startTime, LocalDateTime.now()).plus(durationPast)
@@ -131,11 +142,13 @@ class MyCounting() {
         startTime = LocalDateTime.now()
         distanceTotal = 0.0
         speedTotal = 0.0
+        lapStartDistance = 0.0
         lapDistance = 0.0
         lapSpeed = 0.0
         lapTime = Duration.ZERO
         bestLapTime = Duration.ZERO
         bestLapDistance = 0.0
+        roundsList.clear()
     }
     // Sound stuff
     fun initSounds(){

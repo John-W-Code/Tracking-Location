@@ -1,3 +1,7 @@
+import java.util.Properties
+import java.io.FileInputStream
+import java.io.FileOutputStream
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -15,6 +19,21 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val versionPropsFile = file("version.properties")
+        val properties = Properties()
+        if (versionPropsFile.exists()) {
+            FileInputStream(versionPropsFile).use { properties.load(it) }
+        }
+        val buildNumber = (properties.getProperty("build.number") ?: "0").toInt() + 1
+        properties.setProperty("build.number", buildNumber.toString())
+        FileOutputStream(versionPropsFile).use { properties.store(it, null) }
+
+        buildConfigField("String", "BUILD_NUMBER", "\"$buildNumber\"")
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {

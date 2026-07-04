@@ -75,8 +75,9 @@
         android:layout_marginEnd="16dp"
         android:background="@drawable/background_border"
         android:text="@string/Dash"
-        android:textSize="24sp"
-        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textColor="@color/text_main"
+        android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -90,23 +91,24 @@
         android:layout_marginEnd="16dp"
         android:background="@drawable/background_border"
         android:text="@string/Dash"
-        android:textColor="@color/black"
-        android:textSize="24sp"
+        android:textColor="@color/text_main"
+        android:textSize="20sp"
+        android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/totals_row" />
 
     <TextView
         android:id="@+id/round_count_text_view"
-        android:layout_width="100pt"
-        android:layout_height="100pt"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         android:background="@drawable/circle_grey"
         android:gravity="center"
         android:text="@string/Initial_round_number"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:textSize="96sp"
-        android:textColor="@color/black"
+        android:textSize="64sp"
+        android:textColor="@color/text_main"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -116,231 +118,166 @@
         android:id="@+id/distance_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="334dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/background_border"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         android:text="@string/Initial_distance"
         android:textAlignment="textEnd"
-        android:textSize="14sp"
+        android:textSize="12sp"
+        android:textColor="@color/text_secondary"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <TableLayout
-        android:id="@+id/tableLayout"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/rounds_header"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/header_bg"
+        android:orientation="horizontal"
+        android:padding="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/round_count_text_view">
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <Button
+            android:id="@+id/sort_round"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:text="@string/round"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:drawableEnd="@drawable/ic_sort_both"
+            android:drawablePadding="2dp" />
 
-            <TextView
-                android:id="@+id/hdr_time"
-                style="@style/TableCellText"
-                android:gravity="bottom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="1"
-                android:width="100dp"
-                android:padding="4sp"
-                android:text="@string/time"
-                android:textColor="@color/black" />
+        <Button
+            android:id="@+id/sort_time"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/time"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:drawableEnd="@drawable/ic_sort_both"
+            android:drawablePadding="2dp" />
 
-            <TextView
-                android:id="@+id/hdr_distance"
-                style="@style/TableCellText"
-                android:gravity="bottom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:width="100dp"
-                android:padding="4sp"
-                android:text="@string/distance"
-                android:textColor="@color/black" />
+        <Button
+            android:id="@+id/sort_distance"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:drawableEnd="@drawable/ic_sort_both"
+            android:drawablePadding="2dp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:text="@string/distance"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
 
-            <TextView
-                android:id="@+id/hdr_speed"
-                style="@style/TableCellText"
-                android:gravity="bottom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="3"
-                android:width="110dp"
-                android:padding="4sp"
-                android:text="@string/speed"
-                android:textColor="@color/black" />
-        </TableRow>
+        <Button
+            android:id="@+id/sort_speed"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:text="@string/speed"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:drawableEnd="@drawable/ic_sort_both"
+            android:drawablePadding="2dp" />
+    </LinearLayout>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rounds_recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="175dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/background_border"
+        android:scrollbars="vertical"
+        android:fadeScrollbars="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rounds_header" />
 
-            <TextView
-                android:id="@+id/hdr_total"
-                style="@style/TableCellText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:gravity="top"
-                android:padding="4sp"
-                android:text="@string/total"
-                android:textAlignment="textEnd"
-                android:textColor="@color/black" />
+    <LinearLayout
+        android:id="@+id/totals_row"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/background_border"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rounds_recycler_view">
 
-            <TextView
-                android:id="@+id/textView5"
-                style="@style/TableCellText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="1"
-                android:fontFamily="monospace"
-                android:padding="4sp"
-                android:text=""
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/textView6"
-                style="@style/TableCellText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:fontFamily="monospace"
-                android:padding="4sp"
-                android:text=""
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/textView7"
-                style="@style/TableCellText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="3"
-                android:fontFamily="monospace"
-                android:includeFontPadding="false"
-                android:padding="4sp"
-                android:text=""
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:textColor="@color/black" />
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/lap_row"
+        <TextView
+            android:id="@+id/total_label"
             style="@style/TableCellText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:gravity="center"
+            android:text="@string/total" />
 
-            <TextView
-                android:id="@+id/hdr_per_lap"
-                style="@style/TableCellText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:padding="4sp"
-                android:text="@string/last_lap"
-                android:textAlignment="textEnd"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/textView8"
-                style="@style/TableCellText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="1"
-                android:fontFamily="monospace"
-                android:padding="4sp"
-                android:text=""
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/textView9"
-                style="@style/TableCellText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:fontFamily="monospace"
-                android:padding="4sp"
-                android:text=""
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/textView10"
-                style="@style/TableCellText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="3"
-                android:fontFamily="monospace"
-                android:padding="4sp"
-                android:text=""
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:textColor="@color/black" />
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/best_lap_row"
+        <TextView
+            android:id="@+id/total_time_tv"
             style="@style/TableCellText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="00:00" />
 
-            <TextView
-                android:id="@+id/hdr_best_lap"
-                style="@style/TableCellText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:padding="4sp"
-                android:text="@string/best_lap"
-                android:textAlignment="textEnd"
-                android:textColor="@color/black" />
+        <TextView
+            android:id="@+id/total_distance_tv"
+            style="@style/TableCellText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="0 m" />
 
-            <TextView
-                android:id="@+id/best_lap_time"
-                style="@style/TableCellText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="1"
-                android:fontFamily="monospace"
-                android:padding="4sp"
-                android:text=""
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:textColor="@color/black" />
+        <TextView
+            android:id="@+id/total_speed_tv"
+            style="@style/TableCellText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="0.00" />
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/best_lap_distance"
-                style="@style/TableCellText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:fontFamily="monospace"
-                android:padding="4sp"
-                android:text=""
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:textColor="@color/black" />
 
-            <TextView
-                android:id="@+id/best_lap_speed"
-                style="@style/TableCellText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="3"
-                android:fontFamily="monospace"
-                android:padding="4sp"
-                android:text=""
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:textColor="@color/black" />
-        </TableRow>
-
-    </TableLayout>
-
+    <TextView
+        android:id="@+id/build_version_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="v0"
+        android:textSize="10sp"
+        android:textColor="@color/text_secondary"
+        android:alpha="0.6"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
